@@ -29,10 +29,10 @@ profile=$1
 read -p "Please input the channel name linked to this webhook: " channel
 key="/devops/lambda/flapping_detector/webhooks/channel/$channel"
 read -p "Please input the webhook URL linked to this channel for notifications: " webhook_url
-$(aws ssm put-parameter --name "$key" --value="$webhook_url" --profile "$profile" --type String --overwrite)
+output=$(aws ssm put-parameter --name "$key" --value="$webhook_url" --profile "$profile" --type String --overwrite)
 
 if [ $? -eq 0 ]; then
     e_success "Successfully pushed webhook mapping for $channel to $key" || e_error "Error pushing parameter mapping to SSM"
 else
-    e_error "Failed to update SSM webhook mapping of key: [$key] to [$webhook_url]"
+    e_error "Failed to update SSM webhook mapping of key: [$key] to [$webhook_url] - output: $output"
 fi

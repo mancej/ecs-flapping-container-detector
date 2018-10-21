@@ -242,6 +242,6 @@ def int_from_ssm(key):
 
 def safe_lookup_from_ssm(key):
     try:
-        ssm.get_from_ps(key)
+        return ssm.get_from_ps(key)
     except ClientError as ex:
         raise Exception(f"Unable to lookup {key} from parameter_store. This parameter is required.", ex)
