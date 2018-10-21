@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 . utils.sh
-# Redirects notifications for service X to a different channel.
+# Redirects notifications for service X to a different channel. Useful when you have hundreds of services owned by
+# different teams and you want different teams to get notified, rather than a single channel being spammed for all
+# flapping services.
 
 if [ "$#" != 1 ]; then
     e_error "Invalid parameters, requires: <aws profile>"

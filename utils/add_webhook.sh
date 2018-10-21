@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
+#### IMPORTANT ####
 # Run this after you have applied all of your terraform to set required SSM values via prompts.
-# Due to arguably one of the dumbest decisions ever, if you pass in a URL as a value to an SSM parameter the AWS CLI
-# tries to fetch the URL instead and pass the contents to SSM? Mind blown. As a result the workaround is this:
+# Due to arguably one of the dumbest decisions ever, if you pass in a URL as a value to an SSM parameter, the AWS CLI
+# tries to fetch the URL instead and pass the contents to SSM. As a result the workaround is this:
 # In your ~/.aws/config for the profile you're using, add this flag: cli_follow_urlparam = false
 # For instance:
 
@@ -11,7 +12,8 @@
 #output = json
 #cli_follow_urlparam = false
 
-# If you do not do this, your script will break.
+
+# If you do not do this, your script will break. So please add cli_follow_urlparam to ~/.aws/config if you use this script!
 . utils.sh
 
 
