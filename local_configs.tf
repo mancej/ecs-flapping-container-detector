@@ -15,3 +15,10 @@ locals {
   dynamo_service_metrics_table = "/devops/dynamo/service_metrics_table_name"
   dynamo_service_metrics_hash_key = "/devops/dynamo/service_metrics_hash_key_name"
 }
+
+
+# Other
+locals {
+  flapping_container_detector_name = "ecs-flapping-container-detector"
+  flapping_callback_handler_name = "ecs-flapping-callback-handler"
+}

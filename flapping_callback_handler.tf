@@ -1,7 +1,7 @@
 resource "aws_lambda_function" "flapping_callback_handler" {
   s3_bucket                      = "${aws_s3_bucket.lambda_bucket.id}"
   s3_key                         = "lambdas/${var.zip_name}.zip"
-  function_name                  = "ecs-flapping-callback-handler"
+  function_name                  = "${local.flapping_callback_handler_name}"
   handler                        = "flapping_callback_handler.lambda_handler"
   role                           = "${aws_iam_role.flapping_container_detector.arn}"
   runtime                        = "python3.6"
@@ -9,7 +9,7 @@ resource "aws_lambda_function" "flapping_callback_handler" {
   depends_on                     = ["aws_iam_role.flapping_container_detector"]
   timeout                        = "${var.event_handler_timeout}"
   source_code_hash               = "${data.aws_s3_bucket_object.flapping_container_lambda_hash.body}"
-  reserved_concurrent_executions = 5
+  reserved_concurrent_executions = "${var.handler_reserved_concurrent_executions}"
 
   environment {
     variables = {
@@ -19,7 +19,7 @@ resource "aws_lambda_function" "flapping_callback_handler" {
 }
 
 resource "aws_lambda_permission" "lambda_permission" {
-  statement_id  = "AllowMyDemoAPIInvoke"
+  statement_id  = "ApiGatewayInvokeAccess"
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.flapping_callback_handler.function_name}"
   principal     = "apigateway.amazonaws.com"

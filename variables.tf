@@ -54,6 +54,15 @@ variable "event_handler_timeout" {
   description = "Timeout for this lambda function"
 }
 
+variable "handler_reserved_concurrent_executions" {
+  description = "Maximum # of concurrent executions for the callback handler. Recommended: 3"
+  default = 3
+}
+variable "detector_reserved_concurrent_executions" {
+  description = "Maximum # of concurrent executions for the flapping container detector. For extremely active accounts with large amounts of container starts/stops, increase this beyond 5."
+  default = 5
+}
+
 variable "dynamo_read_max_capacity" {
   description = "Maximum value dynamo can scale up to for reads."
 }

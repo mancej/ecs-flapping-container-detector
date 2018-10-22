@@ -25,7 +25,7 @@ data "template_file" "flapping_container_vpc_lambda_policy" {
 }
 
 resource "aws_iam_policy" "flapping_container_detector_policy" {
-  name   = "ecs-flapping-container-detector-generic"
+  name   = "${local.flapping_container_detector_name}-generic"
   policy = "${data.template_file.flapping_container_vpc_lambda_policy.rendered}"
 }
 
@@ -40,13 +40,13 @@ data "template_file" "flapping_container_parameter_store_read" {
 }
 
 resource "aws_iam_policy" "flapping_container_ssm_read_access" {
-  name   = "ecs-flapping-ssm-read"
+  name   = "${local.flapping_container_detector_name}-ssm-read"
   policy = "${data.template_file.flapping_container_parameter_store_read.rendered}"
 }
 
 # R/W To Dynamo Tables
 resource "aws_iam_policy" "flapping_dynamo_rw_policy" {
-  name   = "ecs-flapping-container-dynamo-access"
+  name   = "${local.flapping_container_detector_name}-dynamo-access"
   policy = "${data.template_file.flapping_dynamo_rw_template.rendered}"
 }
 

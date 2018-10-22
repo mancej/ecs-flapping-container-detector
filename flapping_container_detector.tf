@@ -7,7 +7,7 @@ data "aws_s3_bucket_object" "flapping_container_lambda_hash" {
 resource "aws_lambda_function" "flapping_container_detector" {
   s3_bucket                      = "${aws_s3_bucket.lambda_bucket.id}"
   s3_key                         = "lambdas/${var.zip_name}.zip"
-  function_name                  = "ecs-flapping-container-detector"
+  function_name                  = "${local.flapping_container_detector_name}"
   handler                        = "flapping_container_detector.lambda_handler"
   role                           = "${aws_iam_role.flapping_container_detector.arn}"
   runtime                        = "python3.6"
@@ -15,7 +15,7 @@ resource "aws_lambda_function" "flapping_container_detector" {
   depends_on                     = ["aws_iam_role.flapping_container_detector"]
   timeout                        = "${var.event_handler_timeout}"
   source_code_hash               = "${data.aws_s3_bucket_object.flapping_container_lambda_hash.body}"
-  reserved_concurrent_executions = 5
+  reserved_concurrent_executions = "${var.detector_reserved_concurrent_executions}"
 
   environment {
     variables = {
@@ -41,7 +41,7 @@ PATTERN
 }
 
 resource "aws_cloudwatch_event_target" "flapping_container_detector_target" {
-  target_id  = "ecs-flapping-container-detector"
+  target_id  = "${local.flapping_container_detector_name}"
   arn        = "${aws_lambda_function.flapping_container_detector.arn}"
   rule       = "${aws_cloudwatch_event_rule.flapping_container_detector_rule.name}"
   depends_on = ["aws_lambda_function.flapping_container_detector"]

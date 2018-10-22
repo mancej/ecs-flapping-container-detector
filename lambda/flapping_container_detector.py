@@ -3,7 +3,7 @@ import os
 import re
 import time
 import json
-from dynamo_svc import DynamoDao
+from dynamo import DynamoDao
 from slack import SlackService
 from ssm import SsmSvc
 from datetime import datetime, timedelta
@@ -41,7 +41,7 @@ def lambda_handler(event, context):
                         and notify_in_scope(metrics, notification_interval) \
                         and in_alert_window(start_of_business, end_of_business):
 
-                    channel_name = get_channel(service_name)
+                    channel_name = get_notification_channel(service_name)
 
                     if not channel_name:
                         channel_name = default_channel
@@ -54,14 +54,13 @@ def lambda_handler(event, context):
             else:
                 metrics["recent_starts"] = 1
 
-            print(
-                f'Pushing service metric information: service: {service_name}, run_env: {run_env}, metrics: {metrics}')
+            print(f'Pushing service metric information: service: {service_name}, run_env: {run_env}, metrics: {metrics}')
             metrics["last_updated"] = time.time()
             dynamo.put_service_metrics(service_name, run_env, metrics)
 
 
 # In this case, it's not _required_, so we are ok with returning None if this notification channel isn't configured
-def get_channel(service_name):
+def get_notification_channel(service_name):
     try:
         return ssm.get_from_ps(f"{CHANNEL_CONFIG_PREFIX}/{service_name}")
     except ClientError:
@@ -96,17 +95,17 @@ def in_alert_window(start_time, end_time):
         print(f"It's a weekend, and weekend alerting is disabled. Not alerting!")
         return False
 
-    now_time = now.time()
+    compare_time = now.time()
     start_time = datetime.strptime(start_time, "%I:%M%p").time()
     end_time = datetime.strptime(end_time, "%I:%M%p").time()
-    return is_now_time_in_period(start_time, end_time, now_time)
+    return is_in_time_period(start_time, end_time, compare_time)
 
 
-def is_now_time_in_period(start_time, end_time, now_time):
+def is_in_time_period(start_time, end_time, compare_time):
     if start_time < end_time:
-        return start_time <= now_time <= end_time
+        return start_time <= compare_time <= end_time
     else:  # Over midnight
-        return now_time >= start_time or now_time <= end_time
+        return compare_time >= start_time or compare_time <= end_time
 
 
 # Leverages standard slack message formatting: https://api.slack.com/docs/message-formatting
