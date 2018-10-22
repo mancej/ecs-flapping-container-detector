@@ -34,17 +34,15 @@ data "template_file" "flapping_container_parameter_store_read" {
   template = "${file("${path.module}/policies/ssm_lambda_access.json.tpl")}"
 
   vars {
-      account_id = "${data.aws_caller_identity.current.account_id}"
-      region = "${var.default_region}"
+    account_id = "${data.aws_caller_identity.current.account_id}"
+    region     = "${var.default_region}"
   }
-
 }
 
 resource "aws_iam_policy" "flapping_container_ssm_read_access" {
   name   = "ecs-flapping-ssm-read"
   policy = "${data.template_file.flapping_container_parameter_store_read.rendered}"
 }
-
 
 # R/W To Dynamo Tables
 resource "aws_iam_policy" "flapping_dynamo_rw_policy" {
@@ -56,9 +54,8 @@ data "template_file" "flapping_dynamo_rw_template" {
   template = "${file("${path.module}/policies/dynamo_rw.json.tpl")}"
 
   vars {
-      account_id = "${data.aws_caller_identity.current.account_id}"
-      region = "${var.default_region}"
-      dynamo_table = "${aws_dynamodb_table.ecs_service_metrics.name}"
+    account_id   = "${data.aws_caller_identity.current.account_id}"
+    region       = "${var.default_region}"
+    dynamo_table = "${aws_dynamodb_table.ecs_service_metrics.name}"
   }
-
 }

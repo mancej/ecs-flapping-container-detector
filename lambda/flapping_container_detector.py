@@ -2,6 +2,7 @@ import boto3
 import os
 import re
 import time
+import json
 from dynamo_svc import DynamoDao
 from slack import SlackService
 from ssm import SsmSvc
@@ -18,7 +19,7 @@ ssm = SsmSvc(boto_ssm)
 dynamo = DynamoDao(boto3.resource('dynamodb'), ssm)
 slack = SlackService(dynamo, ssm)
 
-# By looking up and stores these in the global context, these don't have to be looked up every invocation.
+# By looking up and storing these in the global context, these don't have to be refetched every lambda invocation.
 recovery_period, notification_interval, start_of_business, end_of_business, default_channel = None, None, None, None, None
 
 
@@ -43,11 +44,10 @@ def lambda_handler(event, context):
                     channel_name = get_channel(service_name)
 
                     if not channel_name:
-                        channel_name = get_default_channel()
+                        channel_name = default_channel
 
                     assert channel_name, "Channel name cannot be None or Empty!"
-                    post_slack_message(cluster_name, service_name, metrics['recent_starts'], channel_name,
-                                       recovery_period)
+                    post_slack_message(cluster_name, service_name, metrics['recent_starts'], channel_name, recovery_period)
                     metrics["last_notification"] = time.time()
 
                 metrics["recent_starts"] = int(metrics["recent_starts"]) + 1
@@ -60,7 +60,7 @@ def lambda_handler(event, context):
             dynamo.put_service_metrics(service_name, run_env, metrics)
 
 
-# In this case, it's not _required_, so we are ok with returning None this notification channel isn't configured
+# In this case, it's not _required_, so we are ok with returning None if this notification channel isn't configured
 def get_channel(service_name):
     try:
         return ssm.get_from_ps(f"{CHANNEL_CONFIG_PREFIX}/{service_name}")
@@ -115,120 +115,62 @@ def post_slack_message(cluster_name, service_name, recent_starts, channel_name, 
     global ssm
     print(f'Alerting slack channel: {channel_name} for non compliance of service {service_name}')
 
+    callback_id = ssm.get_from_ps(SLACK_SUPPRESS_FLAPPER_CALLBACK_ID)
+    action_name = ssm.get_from_ps(SLACK_SUPPRESS_FLAPPER_ACTION_NAME)
+    json_payload = json.dumps(SLACK_MESSAGE_FORMAT)\
+        .replace("%%service_name%%", service_name)\
+        .replace("%%run_env%%", run_env)\
+        .replace("%%cluster_name%%", cluster_name)\
+        .replace("%%recent_starts%%", str(recent_starts))\
+        .replace("%%recovery_minutes%%", str(int(recovery_period / 60)))\
+        .replace("%%callback_id%%", callback_id)\
+        .replace("%%action_name%%", action_name)
+
     # Post alert to slack
-    slack.push_slack_notification(channel_name, {
-        "attachments": [{
-            "attachment_type": "default",
-            "title": "Flapping Service Alarm",
-            "title_link": f"https://console.aws.amazon.com/ecs/home?region=us-east-1#/clusters/"
-                          f"{cluster_name}/services/{service_name}/events",
-            "text": f"Service: *{service_name}* may be flapping in *{run_env}*. It has started *{recent_starts}* "
-                    f"times since it last went {recovery_period / 60} minutes without restarting!",
-            "color": "warning"
-        },
-            {
-                "attachment_type": "default",
-                "title": "Check the logs!",
-                "title_link": f"{SLACK_LINK_TO_LOGS}",
-                "text": f"Click the above link for a shortcut to the {run_env} *{service_name}* service logs",
-                "color": "warning"
-            },
-            {
-                "attachment_type": "default",
-                "fallback": "Suppress Notifications",
-                "title": "Suppress Notifications :no_bell: ",
-                "color": "warning",
-                "callback_id": f"{ssm.get_from_ps(SLACK_SUPPRESS_FLAPPER_CALLBACK_ID)}",
-                "actions": [
-                    {
-                        "name": f"{ssm.get_from_ps(SLACK_SUPPRESS_FLAPPER_ACTION_NAME)}",
-                        "text": "Suppress Notifications :no_bell:",
-                        "type": "select",
-                        "style": "danger",
-                        "options": [
-                            {
-                                "text": "30m",
-                                "value": f"{service_name}|{run_env}|30"
-                            },
-                            {
-                                "text": "1 hour",
-                                "value": f"{service_name}|{run_env}|60"
-                            },
-                            {
-                                "text": "2 hours",
-                                "value": f"{service_name}|{run_env}|120"
-                            },
-                            {
-                                "text": "4 hours",
-                                "value": f"{service_name}|{run_env}|240"
-                            }
-                        ],
-                        "confirm": {
-                            "title": f"{SLACK_CONFIRM_MODAL_TITLE}",
-                            "text": f"{SLACK_CONFIRM_MODAL_TEXT}".replace("%service_name%", service_name),
-                            "ok_text": f"{SLACK_CONFIRM_MODAL_OK_TEXT}",
-                            "dismiss_text": f"{SLACK_CONFIRM_MODAL_DISMISS_TEXT}"
-                        }
-                    }
-                ]
-            }
-        ]
-    })
+    slack.push_slack_notification(channel_name, json.loads(json_payload))
 
 
-# Slightly inefficient, double set - I'm ok with it.
 def init_config():
-    global recovery_period, notification_interval, start_of_business, end_of_business
+    init_default_channel()
+    init_recovery_period()
+    init_notification_interval()
+    init_start_of_business()
+    init_end_of_business()
 
-    recovery_period = get_recovery_period()
-    notification_interval = get_notification_interval()
-    start_of_business = get_start_of_business()
-    end_of_business = get_end_of_business()
 
-
-def get_default_channel():
+def init_default_channel():
     global default_channel
 
     if not default_channel:
         default_channel = str_from_ssm(DEFAULT_CHANNEL)
 
-    return default_channel
 
-
-def get_recovery_period():
+def init_recovery_period():
     global recovery_period
 
     if not recovery_period:
         recovery_period = int_from_ssm(RECOVERY_PERIOD)
 
-    return recovery_period
 
-
-def get_notification_interval():
+def init_notification_interval():
     global notification_interval
 
     if not notification_interval:
         notification_interval = int_from_ssm(NOTIFICATION_INTERVAL_PATH)
 
-    return notification_interval
 
-
-def get_start_of_business():
+def init_start_of_business():
     global start_of_business
 
     if not start_of_business:
         start_of_business = str_from_ssm(START_OF_BUSINESS_PATH)
 
-    return start_of_business
 
-
-def get_end_of_business():
+def init_end_of_business():
     global end_of_business
 
     if not end_of_business:
         end_of_business = str_from_ssm(END_OF_BUSINESS_PATH)
-
-    return end_of_business
 
 
 def str_from_ssm(key):

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # We do not keep this parameter in terraform since it would prompt you every time to enter it, or you'd have to
-# commit it into github which would be insecure. Use this bash script to push up your slack signing secret to
-# parameter store
+## commit it into github which would be insecure. Use this bash script to push up your slack signing secret to
+## parameter store
 
 . utils.sh
 

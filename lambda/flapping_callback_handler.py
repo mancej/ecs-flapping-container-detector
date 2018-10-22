@@ -47,10 +47,8 @@ def validate_slack_signature(headers, body):
                       digestmod=hashlib.sha256).hexdigest()
     my_signature = f"v0={digest}"
 
-    print(f"Got my signature: {my_signature} compared to {slack_signature}")
-
     # Validate signature
     if not hmac.compare_digest(my_signature, slack_signature):
-        print(f"Signature is invalid, got: {my_signature} was expecting: {slack_signature}")
-        # Header signature is invalid.
+        # Uncomment for troubleshooting, but we don't want to log the calculated signature by default.
+        #print(f"Signature is invalid, got: {my_signature} was expecting: {slack_signature}")
         raise Exception("Bad Request. Error Code: S4")

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Builds the flapping container lambda and deploys it to the s3 bucket configured in config.tfvars
-. utils/utils.sh
+# Todo: Clean this the heck up...don't judge me.
+
+. scripts/utils.sh
 
 if [ "$#" != 1 ]; then
     e_error "Invalid parameters, requires: <aws profile>"
