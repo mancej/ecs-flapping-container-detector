@@ -17,7 +17,7 @@ resource "aws_lambda_function" "flapping_container_detector" {
   source_code_hash               = "${data.aws_s3_bucket_object.flapping_container_lambda_hash.body}"
   reserved_concurrent_executions = 5
 
-  environment {perso
+  environment {
     variables = {
       run_env = "${var.run_env}"
     }
