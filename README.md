@@ -12,7 +12,7 @@ First Alert
 User may then suppress the alarm
 ![Suppression Options](/docs/images/SuppressDropdown.png?raw=true "Suppression Options")
 
-User must accept confirmation dialog
+User must accept confirmation dialog (this text is configurable)
 ![Confirmation](/docs/images/ConfirmationModal.png?raw=true "Confirmation")
 
 Channel is updated with the user's confirmation
@@ -25,8 +25,12 @@ Channel is updated with the user's confirmation
 
 
 Homebrew installation of dependencies:
+
 `brew install terraform`
 
 `brew install aws-cli`
 
+
 #### Installation & Config:
+
+Guide to be added asap.

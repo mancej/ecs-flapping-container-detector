@@ -63,7 +63,7 @@ def lambda_handler(event, context):
 # In this case, it's not _required_, so we are ok with returning None this notification channel isn't configured
 def get_channel(service_name):
     try:
-        return ssm.get_from_ps(f"/devops/lambda/flapping_detector/notifications/channel/{service_name}")
+        return ssm.get_from_ps(f"{CHANNEL_CONFIG_PREFIX}/{service_name}")
     except ClientError:
         print(f"No channel override found for service {service_name}")
         return None
@@ -129,7 +129,7 @@ def post_slack_message(cluster_name, service_name, recent_starts, channel_name, 
             {
                 "attachment_type": "default",
                 "title": "Check the logs!",
-                "title_link": f"https://queryable-link-to-your-log-solution",
+                "title_link": f"{SLACK_LINK_TO_LOGS}",
                 "text": f"Click the above link for a shortcut to the {run_env} *{service_name}* service logs",
                 "color": "warning"
             },
@@ -164,11 +164,10 @@ def post_slack_message(cluster_name, service_name, recent_starts, channel_name, 
                             }
                         ],
                         "confirm": {
-                            "title": f"So you're gonna fix it?",
-                            "text": f"You betta fix {service_name} or get someone else to fix it if you're going to "
-                                    f"silence this!",
-                            "ok_text": "You betcha!",
-                            "dismiss_text": "No way!"
+                            "title": f"{SLACK_CONFIRM_MODAL_TITLE}",
+                            "text": f"{SLACK_CONFIRM_MODAL_TEXT}".replace("%service_name%", service_name),
+                            "ok_text": f"{SLACK_CONFIRM_MODAL_OK_TEXT}",
+                            "dismiss_text": f"{SLACK_CONFIRM_MODAL_DISMISS_TEXT}"
                         }
                     }
                 ]
