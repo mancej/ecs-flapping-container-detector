@@ -11,7 +11,7 @@ workspace to take action on posted Flapping Container Detector messages.
 
 - Once in your Slack app, select the "Incoming Webhooks" menu on the left to open the Incoming Webhooks configuration.
 
-![Suppression Options](images/IncomingWebhooksMenu.png "Incoming Webhooks Menu")
+![Suppression Options](images/IncomingWebhooksMenu.png | height = 100px)
 
 - Active Incoming webhooks by toggling the slider to "On" in the top right hand corner.
 
@@ -21,7 +21,7 @@ workspace to take action on posted Flapping Container Detector messages.
 
 ![Suppression Options](images/Webhooks-Config.png "Incoming Webhooks Config")
 
-To configure the default webhook:
+**To configure the default webhook:**
 
 1) Select "Add New Webhook to Workspace"
 2) Select the channel you want all notifications to be pushed to (you may override notifications to other channels on a service by service basis later)
