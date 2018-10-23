@@ -29,7 +29,7 @@ cd ${originalDir}
 openssl dgst -sha256 -binary ${zip_name}.zip | openssl enc -base64 > flapping_container_detector.zip.sha256
 aws s3 cp ${zip_name}.zip s3://${S3_BUCKET}/lambdas/${zip_name}.zip --profile ${profile}
 aws s3 cp ${zip_name}.zip.sha256 s3://${S3_BUCKET}/lambdas/${zip_name}.zip.sha256 --content-type text/plain --profile ${profile}
-echo "${zip_name}.zip copied to S3 successfully"
+e_notify "${zip_name}.zip copied to S3 successfully"
 
 rm -rf lambda/build
 rm ${zip_name}.zip

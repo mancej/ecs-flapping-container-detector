@@ -1,5 +1,5 @@
 resource "aws_lambda_function" "flapping_callback_handler" {
-  s3_bucket                      = "${aws_s3_bucket.lambda_bucket.id}"
+  s3_bucket                      = "${var.lambda_bucket_id}"
   s3_key                         = "lambdas/${var.zip_name}.zip"
   function_name                  = "${local.flapping_callback_handler_name}"
   handler                        = "flapping_callback_handler.lambda_handler"

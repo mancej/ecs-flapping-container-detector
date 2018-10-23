@@ -100,10 +100,6 @@ variable "zip_name" {
   default     = "flapping_container_detector"
 }
 
-variable "dynamo_profile" {
-  description = "Profile in ~/.aws/credentials to use to provision the dynamo tables"
-}
-
 variable "default_profile" {
-  description = "Profile in ~/.aws/credentials to use to provision everything else in"
+  description = "Profile in ~/.aws/credentials to use to provision everything in"
 }

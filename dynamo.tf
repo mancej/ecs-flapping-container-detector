@@ -3,7 +3,6 @@ locals {
 }
 
 resource "aws_dynamodb_table" "ecs_service_metrics" {
-  provider       = "aws.dynamo_env"
   name           = "ecs-service-metrics"
   read_capacity  = "${var.dynamo_default_read_capacity}"
   write_capacity = "${var.dynamo_default_write_capacity}"
@@ -26,7 +25,6 @@ resource "aws_dynamodb_table" "ecs_service_metrics" {
 
 # Read Scaling
 resource "aws_appautoscaling_target" "ecs_service_metrics_read_target" {
-  provider           = "aws.dynamo_env"
   max_capacity       = "${var.dynamo_read_max_capacity}"
   min_capacity       = "${var.dynamo_read_min_capacity}"
   resource_id        = "table/${aws_dynamodb_table.ecs_service_metrics.name}"
@@ -36,7 +34,6 @@ resource "aws_appautoscaling_target" "ecs_service_metrics_read_target" {
 }
 
 resource "aws_appautoscaling_policy" "ecs_service_metrics_read_policy" {
-  provider           = "aws.dynamo_env"
   name               = "DynamoDBReadCapacityUtilization:${aws_appautoscaling_target.ecs_service_metrics_read_target.resource_id}"
   policy_type        = "TargetTrackingScaling"
   resource_id        = "${aws_appautoscaling_target.ecs_service_metrics_read_target.resource_id}"
@@ -54,7 +51,6 @@ resource "aws_appautoscaling_policy" "ecs_service_metrics_read_policy" {
 
 # Write scaling
 resource "aws_appautoscaling_policy" "ecs_service_metrics_write_policy" {
-  provider           = "aws.dynamo_env"
   name               = "DynamoDBWriteCapacityUtilization:${aws_appautoscaling_target.ecs_service_metrics_write_target.resource_id}"
   policy_type        = "TargetTrackingScaling"
   resource_id        = "${aws_appautoscaling_target.ecs_service_metrics_write_target.resource_id}"
@@ -71,7 +67,6 @@ resource "aws_appautoscaling_policy" "ecs_service_metrics_write_policy" {
 }
 
 resource "aws_appautoscaling_target" "ecs_service_metrics_write_target" {
-  provider           = "aws.dynamo_env"
   max_capacity       = "${var.dynamo_write_max_capacity}"
   min_capacity       = "${var.dynamo_write_min_capacity}"
   resource_id        = "table/${aws_dynamodb_table.ecs_service_metrics.name}"

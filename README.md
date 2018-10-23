@@ -33,4 +33,6 @@ Homebrew installation of dependencies:
 
 #### Installation & Config:
 
-Guide to be added asap.
+1) Create a new Slack application: See [Slack App Setup Guide](/docs/slack_app_setup.md "Slack App Setup Guide")
+2) Deploy via Terraform: See [Terraform Deployment Guide](/docs/deployment_guide.md "Terraform Deployment Guide")
+3) Post Deploy Slack configuration: See [Slack App Setup Guide](/docs/slack_app_setup.md "Slack App Setup Guide") parts 4 and 5.

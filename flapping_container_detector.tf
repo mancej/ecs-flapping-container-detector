@@ -5,7 +5,7 @@ data "aws_s3_bucket_object" "flapping_container_lambda_hash" {
 }
 
 resource "aws_lambda_function" "flapping_container_detector" {
-  s3_bucket                      = "${aws_s3_bucket.lambda_bucket.id}"
+  s3_bucket                      = "${var.lambda_bucket_id}"
   s3_key                         = "lambdas/${var.zip_name}.zip"
   function_name                  = "${local.flapping_container_detector_name}"
   handler                        = "flapping_container_detector.lambda_handler"
