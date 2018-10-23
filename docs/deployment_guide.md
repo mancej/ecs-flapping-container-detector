@@ -45,6 +45,6 @@ After Terrafrom has done provisioning resources, you should see something like t
 
 `api_gateway_url = https://somepath.execute-api.us-east-1.amazonaws.com/dev`
 
-Keep this URL, you'll need it.
+Copy this URL to your clipboard, you'll need it.
 
 Head back over to the [Slack Setup Guide](slack_app_setup.md#step-4-configure-your-api-callback-endpoint "Slack App Setup") with this URL and continue on Step 4!

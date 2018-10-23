@@ -52,8 +52,10 @@ for service `foo` to be redirected to a new channel.
 
 ### Step 4: Configure your API Callback endpoint.
 
-You new Flapping Container Handler lambda was configured with a public API endpoint URL. Slack needs to know about this
-URL so it knows how to direct suppression events to your handler!
+Whenever a user interacts with the Flapping Container Detector and suppresses an alarm, a callback is triggered and Slack's API is notified.
+Slack then takes that event, signs a request with a shared secret and hits a configured AWS API Gateway endpoint that
+the flapping_callback_handler is listening to. If you are returning from the Deployment guide, you should have an API Gateway URL from
+your Terraform output in your clipboard. Use that here.
 
 - Under the left nav bar in your Slack App, navigate to Interactive Components again. There is where you configured your Slack Action.
 - Input the the outputted API URL from the output of your `terrafrom apply` command. The one I told you to take note of earlier in the Deployment Guide.
@@ -62,9 +64,8 @@ URL so it knows how to direct suppression events to your handler!
 
 ### Step 5: Configuring your slack secrets.
 
-Whenever a user interacts with the Flapping Container Detector and suppresses an alarm, a callback is triggered and Slack's API is notified.
-Slack then takes that event, signs a request with a shared secret, and hits a configured endpoint AWS API Gateway endpoint that
-the flapping_callback_handler is listening to. You'll set up this integration later, but first, we need to configure the shared secrets with slack.
+For the flapping container handler to validate that requests from Slack are authentic, it needs the Client Secret and Signing Secret
+as provided by your Slack Application configuration.
 
 - Navigate to up your Slack App's "Basic Information" via the left nav bar.
 - In the App Credentials section, you will see a generated `Client Secret` and `Signing Secret`
