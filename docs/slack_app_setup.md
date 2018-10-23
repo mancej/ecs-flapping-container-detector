@@ -7,7 +7,7 @@ Webhooks enable your Slack app to post to various channels in your Slack workspa
 workspace to take action on posted Flapping Container Detector messages.
 
 
-###Step 1: Setting up Webhooks
+### Step 1: Setting up Webhooks
 
 - Once in your Slack app, select the "Incoming Webhooks" menu on the left to open the Incoming Webhooks configuration.
 
@@ -44,7 +44,7 @@ for service `foo` to be redirected to a new channel.
 - Under "Actions" select "Create new Action"
 ![Suppression Options](images/CreateAction.png?raw=true "Incoming Webhooks Config")
 - Input an Action Name. Take this _exact_ name and set the value of config.tfvars / `slack_suppress_flapper_action_name` to your inputted action name.
-- Input a callback_id. Tkae this _exact_ callback id and set the value of config.tfvars / `slack_suppress_flapper_callback_id` to your inputted callback_id.
+- Input a callback_id. Take this _exact_ callback id and set the value of config.tfvars / `slack_suppress_flapper_callback_id` to your inputted callback_id.
 
 
 ### Step 3: Deploy your App. 
@@ -54,15 +54,12 @@ for service `foo` to be redirected to a new channel.
 ### Step 4: Configure your API Callback endpoint.
 
 You new Flapping Container Handler lambda was configured with a public API endpoint URL. Slack needs to know about this
-URL so it know how to direct suppression events to your handler!
+URL so it knows how to direct suppression events to your handler!
 
 - Under the left nav bar in your Slack App, navigate to Interactive Components again. There is where you configured your Slack Action.
 - Input the the outputted API URL from the output of your `terrafrom apply` command. The one I told you to take note of earlier in the Deployment Guide.
 ![API URL](images/InteractiveComponentURlInput.png)
-
-Save and your'e done! Your Flapping container detector is deployed & configured! Add more webhooks via this Interactive
-components panel and configure more per-service redirects and overrides with the provided scripts. Yay!
-
+- Click Save
 
 ### Step 5: Configuring your slack secrets.
 
@@ -75,3 +72,7 @@ the flapping_callback_handler is listening to. You'll set up this integration la
 - Run the utils/configure_slack_secrets.sh bash script and input the `Client Secret` and `Signing Secret` when prompted.
 
 This will put your client / signing secrets in parameter as the `SecureSecret` type. Your app will need these to validate callbacks from your Slack workspace!
+
+
+Congratulations! Your'e done! Your Flapping container detector is deployed & configured! You may add more webhooks via the Interactive
+components panel and configure more per-service redirects and overrides with the provided scripts in the scripts/ directory. Yay!
