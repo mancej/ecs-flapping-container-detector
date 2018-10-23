@@ -31,7 +31,7 @@ Build & Deploy Your lambda: `./build_and_deploy.sh your_aws_profile_name`
 
 This will build your lambda, zip it, take a hash of it, and push it to your selected bucket.
 
-### Step 4
+### Step 4 
 
 Use terraform to deploy everything else: `terraform apply -var-file config.tfvars`
 - Input the `profile_name` of the AWS account that has the ECS clusters running that you want to monitor
@@ -43,4 +43,4 @@ After Terrafrom has done provisioning resources, you should see something like t
 
 Keep this URL, you'll need it.
 
-Head back over to the [Slack Setup Guide](slack_app_setup.md "Slack App Setup") with this URL and continue on Step 4!
+Head back over to the [Slack Setup Guide](slack_app_setup.md#step-4-configure-your-api-callback-endpoint "Slack App Setup") with this URL and continue on Step 4!

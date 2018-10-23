@@ -11,15 +11,15 @@ workspace to take action on posted Flapping Container Detector messages.
 
 - Once in your Slack app, select the "Incoming Webhooks" menu on the left to open the Incoming Webhooks configuration.
 
-![Suppression Options](images/IncomingWebhooksMenu.png?raw=true "Incoming Webhooks Menu")
+![Suppression Options](images/IncomingWebhooksMenu.png "Incoming Webhooks Menu")
 
 - Active Incoming webhooks by toggling the slider to "On" in the top right hand corner.
 
-![Suppression Options](images/IncomingWebhooks.png?raw=true "Incoming Webhooks Toggle")
+![Suppression Options](images/IncomingWebhooks.png "Incoming Webhooks Toggle")
 
 - Configure your default webhook. All Flapping Container detector notifications will go to the default webhook's channel if not otherwise redirected.
 
-![Suppression Options](images/Webhooks-Config.png?raw=true "Incoming Webhooks Config")
+![Suppression Options](images/Webhooks-Config.png "Incoming Webhooks Config")
 
 To configure the default webhook:
 
@@ -42,14 +42,13 @@ for service `foo` to be redirected to a new channel.
 - Select the "Interactive Components" from the left Nav bar in your Slack Application
 - Toggle Interactivity on by adjusting the slider.
 - Under "Actions" select "Create new Action"
-![Suppression Options](images/CreateAction.png?raw=true "Incoming Webhooks Config")
+![Suppression Options](images/CreateAction.png "Incoming Webhooks Config")
 - Input an Action Name. Take this _exact_ name and set the value of config.tfvars / `slack_suppress_flapper_action_name` to your inputted action name.
 - Input a callback_id. Take this _exact_ callback id and set the value of config.tfvars / `slack_suppress_flapper_callback_id` to your inputted callback_id.
 
 
 ### Step 3: Deploy your App. 
 - Follow the guide in the [Deployment Guide](deployment_guide.md "Deployment Guide") to deploy your flapping container detector. Then come back here!
-
 
 ### Step 4: Configure your API Callback endpoint.
 
