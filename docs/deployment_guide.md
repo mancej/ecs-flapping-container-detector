@@ -1,8 +1,12 @@
 Deploying the Flapping Container Detector should be easy!
 
-You will need Terraform installed (`brew install terraform`) - All testing was done with Terraform 0.11.7
+Prerequisites:
+- awscli (`brew install awscli`)
+- Terraform (`brew install terraform`)
 
-You will need your AWS CLI configured with a profile. (`brew install aws-cli` | `aws configure --profile YOUR_PROFILE_NAME`)
+You will need Terraform installed. All testing was done with Terraform 0.11.7
+
+You will need your AWS CLI configured with a profile. (`aws configure --profile YOUR_PROFILE_NAME`)
 
 ### Step 1
 Go through your `config.tfvars` file and configure your Flapping container detector as you'd like. Most of the default
