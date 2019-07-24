@@ -12,8 +12,15 @@ You will need your AWS CLI configured with a profile. (`aws configure --profile 
 Go through your `config.tfvars` file and configure your Flapping container detector as you'd like. Most of the default
 values are reasonable.
 
-
+    
 ### Step 2
+
+Build & Deploy Your lambda: `./build_and_deploy.sh your_aws_profile_name`
+
+This will build your lambda, zip it, take a hash of it, and push it to your selected bucket.
+
+
+### Step 3
 
 Run Terraform apply with your config file: `terraform apply -var-file config.tfvars`
 
@@ -28,12 +35,6 @@ A) Create a new bucket to deploy the lambda to:
  
 B) Use an existing bucket.
 - Comment out the contents of buckets.tf and update your config.tfvars / `lambda_bucket_id` property to the bucket you want to deploy lambdas to.
-    
-### Step 3 
-
-Build & Deploy Your lambda: `./build_and_deploy.sh your_aws_profile_name`
-
-This will build your lambda, zip it, take a hash of it, and push it to your selected bucket.
 
 ### Step 4 
 

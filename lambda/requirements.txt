@@ -1,3 +1,3 @@
 requests
 python-dateutil
-simple-json
+simplejson==3.16.0
